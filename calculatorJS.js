@@ -53,16 +53,13 @@ function addToSum(addition) {
 }
 
 function calculate() {
-      console.log(sum);
+
   if(sum.length > 0) {
-    clear();
-    //calculate begins here.    
+    clear();    
     improveArray();
     divideIntoCalculations(0);
-
     text('the answer is ' + sum, 100, 100);
-    sum = [];
-    
+    console.log(sum);
   } else {
      console.log('you have not filled in a sum yet, please do this.'); 
   }
@@ -101,21 +98,34 @@ function divideIntoCalculations(i) {
     item = sum[i];
     if(item !== 0 || item % 1 !== 0) {
       //if item isn't a number, check for what kind of operation it is.
-      if(item === '+') {
-        var plusReturn = plus(i);
-        sum[i] = plusReturn;
-        sum.splice(i-1, 1);
-        sum.splice(i, 1);
-        i = i - 1;
-        divideIntoCalculations(i);
+      if(item === '+') { 
+        if(sum[i+1] === '-') {
+          var newNumber = sum[i+1] + sum[i+2];
+          sum[i+2] = parseInt(newNumber,10);
+          sum.splice(i+1,1);
+          divideIntoCalculations(i);
+        } else {
+          var plusReturn = plus(i);
+          sum[i] = plusReturn;
+          sum.splice(i-1, 1);
+          sum.splice(i, 1);
+          i = i - 1;
+          divideIntoCalculations(i);
+        }
       }
       else if(item === '-') {
-        var minusReturn = minus(i); 
-        sum[i] = minusReturn;
-        sum.splice(i-1, 1);
-        sum.splice(i, 1);
-        i = i - 1;
-        divideIntoCalculations(i);
+        if(i === 0) {
+          var newNumber = sum[i]+sum[i+1];
+          sum[i] = parseInt(newNumber);
+          sum.splice(i+1,1);
+        } else {
+          var minusReturn = minus(i); 
+          sum[i] = minusReturn;
+          sum.splice(i-1, 1);
+          sum.splice(i, 1);
+          i = i - 1;
+          divideIntoCalculations(i);
+        }
       }
       else if(item === 'x') {
         var multiplyReturn = multiply(i);
@@ -163,9 +173,10 @@ function minus(minusLocator) {
   //grab all relevant numbers.
   var firstNumber = sum[minusLocator - 1];
   var secondNumber = sum[minusLocator + 1];
-  
   var answer = firstNumber - secondNumber;
+  
   return answer;
+ 
 }
 
 function multiply(multiplyLocator) {
