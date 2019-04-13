@@ -55,13 +55,22 @@ function addToSum(addition) {
 function calculate() {
 
   if(sum.length > 0) {
+    var errorFound = 0;
     clear();    
     improveArray();
-    divideIntoCalculations(0);
-    text('the answer is ' + sum, 100, 100);
-    console.log(sum);
+    try {
+      divideIntoCalculations(0);
+    }
+    catch(err) {
+      text('the sum you have entered is not a valid sum, please try again.',10,200);
+      console.log('error ' + err.message);
+      errorFound = 1;
+    } 
+    if(errorFound === 0) {
+       text('the answer is: ' + sum,200,200);
+    }
   } else {
-     console.log('you have not filled in a sum yet, please do this.'); 
+     text('you have not filled in a sum yet, please do this.', 200,200); 
   }
 }
 
@@ -128,34 +137,61 @@ function divideIntoCalculations(i) {
         }
       }
       else if(item === 'x') {
-        var multiplyReturn = multiply(i);
-        sum[i] = multiplyReturn;
-        sum.splice(i-1, 1);
-        sum.splice(i, 1);
-        i = i - 1;
-        divideIntoCalculations(i);
+        if(sum[i+1] === '-') {
+          var newNumber = sum[i+1] + sum[i+2];
+          sum[i+2] = parseInt(newNumber,10);
+          sum.splice(i+1,1);
+          divideIntoCalculations(i);
+        } else {
+          var multiplyReturn = multiply(i);
+          sum[i] = multiplyReturn;
+          sum.splice(i-1, 1);
+          sum.splice(i, 1);
+          i = i - 1;
+          divideIntoCalculations(i);
+        }
       }
       else if(item === '/') {
-        var divideReturn = divide(i);
-        sum[i] = divideReturn;
-        sum.splice(i-1, 1);
-        sum.splice(i, 1);
-        i = i - 1;
-        divideIntoCalculations(i);
- 
+        if(sum[i+1] === '-') {
+          var newNumber = sum[i+1] + sum[i+2];
+          sum[i+2] = parseInt(newNumber,10);
+          sum.splice(i+1,1);
+          divideIntoCalculations(i);
+        } else {
+          var divideReturn = divide(i);
+          sum[i] = divideReturn;
+          sum.splice(i-1, 1);
+          sum.splice(i, 1);
+          i = i - 1;
+          divideIntoCalculations(i);
+        }
       } 
       
       else if(item === 'sqrt') {
-        var sqrt_Return = sqrt_(i);
-        sum[i] = sqrt_Return;
-        sum.splice(i+1, 1);
-        divideIntoCalculations(i);
+        if(sum[i+1] === '-') {
+          var newNumber = sum[i+1] + sum[i+2];
+          sum[i+2] = parseInt(newNumber,10);
+          sum.splice(i+1,1);
+          divideIntoCalculations(i);
+        } else {
+          var sqrt_Return = sqrt_(i);
+          sum[i] = sqrt_Return;
+          sum.splice(i+1, 1);
+          divideIntoCalculations(i);
+        }
       }
       else if(item === 'square') {
-       var square_Return = square_(i);
-        sum[i] = square_Return;
-        sum.splice(i-1, 1);
-        divideIntoCalculations(i);
+       if(sum[i+1] === '-') {
+          var newNumber = sum[i+1] + sum[i+2];
+          sum[i+2] = parseInt(newNumber,10);
+          sum.splice(i+1,1);
+          divideIntoCalculations(i);
+        } else {
+          var square_Return = square_(i);
+          sum[i] = square_Return;
+          sum.splice(i-1, 1);
+          divideIntoCalculations(i);
+        }
       } divideIntoCalculations(i + 1);
     } 
   } 
